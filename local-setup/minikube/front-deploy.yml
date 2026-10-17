@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: front-taskboard
+  namespace: taskboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: front-taskboard
+  template:
+    metadata:
+      labels:
+        app: front-taskboard
+    spec:
+      containers:
+        - name: taskboard-front
+          image: tsakboardfront:1
+          env:
+            - name: BACKEND_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: connection-db
+                  key: BACKEND_URL

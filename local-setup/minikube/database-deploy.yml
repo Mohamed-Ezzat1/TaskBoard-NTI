@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-taskboard
+  namespace: taskboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+     app: db-taskboard
+  template:
+    metadata:
+      labels:
+        app : db-taskboard
+    spec:
+      containers:
+        - name: db-taskboard
+          image:  postgres:17
+          envFrom:
+            - configMapRef:
+                name: connection-db

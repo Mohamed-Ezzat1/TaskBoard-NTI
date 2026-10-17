@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: back-taskboard
+  namespace: taskboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: back-taskboard
+  template:
+    metadata:
+      labels:
+        app: back-taskboard
+    spec:
+      containers:
+        - name: taskboard-back
+          image: tsakboardback:1
+          envFrom:
+            - configMapRef:
+                name: connection-db

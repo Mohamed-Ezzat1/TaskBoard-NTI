@@ -1,0 +1,62 @@
+services:
+  frontend:
+    build:
+      context: ../app/frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:8080"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+       backend:
+          condition: service_healthy
+    networks:
+      - frontnet
+  backend:
+    build:
+      context: ../app/backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    networks:
+      - backnet
+      - frontnet
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request; urllib.request.urlopen(\"http://localhost:8000/api/health\")' || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 4s
+    depends_on:
+       db:
+          condition: service_healthy
+  db:
+    image: postgres:17
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    networks:
+      - backnet
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${DB_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 4s
+networks:
+  backnet:
+    driver: bridge
+  frontnet:
+    driver: bridge
+volumes:
+  db_data:
+    driver: local
