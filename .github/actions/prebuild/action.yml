@@ -1,0 +1,14 @@
+name: prebuild action ${{ github.triggering_actor }}
+description: prebuild scan
+runs:
+  using: composite
+  steps:
+    - name: GitLeaks test
+      uses: gitleaks/gitleaks-action@v3
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: trufflesecurity
+      uses: trufflesecurity/trufflehog@main
+      with:
+        extra_args: --debug --only-verified 
+    - name: 
