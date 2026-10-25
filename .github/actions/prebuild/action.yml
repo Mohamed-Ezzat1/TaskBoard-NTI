@@ -1,14 +1,33 @@
-name: prebuild action ${{ github.triggering_actor }}
+name: prebuild action 
 description: prebuild scan
+inputs:
+  github_token:
+    required: true
+  sonar-token:
+    required: true
 runs:
   using: composite
   steps:
     - name: GitLeaks test
       uses: gitleaks/gitleaks-action@v3
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
     - name: trufflesecurity
+      if: always()
       uses: trufflesecurity/trufflehog@main
       with:
         extra_args: --debug --only-verified 
-    - name: 
+    - name: trivy scan 
+      if: always()
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        scan-type: fs
+        ignore-unfixed: true
+        format: table
+        severity:   CRITICAL,HIGH
+        exit-code: 1
+    - name: sonarqube
+      if: always()
+      uses: SonarSource/sonarqube-scan-action@v6
+      env:
+        SONAR_TOKEN: ${{inputs.sonar-token}}
