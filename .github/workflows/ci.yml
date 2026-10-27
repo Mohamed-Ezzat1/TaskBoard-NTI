@@ -13,6 +13,6 @@ jobs:
                 fetch-depth: 0
                 persist-credentials: false
             - name: prebuild composite action 
-              uses: ./.gitub/actions/prebuild
+              uses: ./.github/actions/prebuild
               with:
                 sonar-token: ${{secrets.SONAR_TOKEN}}
