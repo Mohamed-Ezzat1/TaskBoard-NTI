@@ -1,8 +1,6 @@
 name: prebuild action 
 description: prebuild scan
 inputs:
-  github_token:
-    required: true
   sonar-token:
     required: true
 runs:
@@ -11,7 +9,7 @@ runs:
     - name: GitLeaks test
       uses: gitleaks/gitleaks-action@v3
       env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
+        GITHUB_TOKEN: ${{ github.token }}
     - name: trufflesecurity
       if: always()
       uses: trufflesecurity/trufflehog@main
