@@ -1,0 +1,9 @@
+name: postbuild action
+description: postbuild
+inputs:
+  artifact-name:
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: 

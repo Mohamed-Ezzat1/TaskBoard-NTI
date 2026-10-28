@@ -1,7 +1,7 @@
 name: ci by 
 run-name: run number ${{github.run_number}}
 on:
-    push:
+#    push:
     workflow_dispatch:
 jobs:
     prebuild:
@@ -16,3 +16,44 @@ jobs:
               uses: ./.github/actions/prebuild
               with:
                 sonar-token: ${{secrets.SONAR_TOKEN}}
+    artifact:
+      runs-on: ubuntu-latest
+      needs: prebuild
+      steps:
+        - name: install docker 
+          uses: docker/setup-buildx-action@v3
+        - name: build frontend image
+          uses: docker/build-push-action@v5
+          with:
+            context: ./app/frontend
+            tags: frontend:latest
+            load: true
+        - name: build backend image
+          uses: docker/build-push-action@v5
+          with:
+            context: ./app/backend
+            tags: backend:latest
+            load: true
+        - name: save docker images 
+          shell: bash
+          run:
+            docker save frontend:latest backend:latest -o images.tar
+        - name: upload artifacts
+          uses: actions/upload-artifact@v7
+          with:
+            name: taskboard-images
+            path: images.tar
+    postbuild:
+      runs-on: ubuntu-latest
+      needs: artifact
+      steps:
+        - name: install docker 
+          uses: docker/setup-buildx-action@v3
+        - name: download artifact
+          uses: actions/download-artifact@v7
+          with:
+            name: taskboard-images
+        - name: load images
+          shell: bash
+          run:
+            docker load -i images.tar
