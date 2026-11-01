@@ -18,6 +18,7 @@ runs:
     - name: generate sbom
       uses: aquasecurity/trivy-action@v0.36.0
       with:
-        scan-type: sbom
+        scan-type: image
         image-ref: ${{inputs.image-name}}
+        format: cyclonedx
         output: sbom.json
