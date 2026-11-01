@@ -1,9 +1,23 @@
 name: postbuild action
 description: postbuild
 inputs:
-  artifact-name:
+  image-name:
     required: true
 runs:
   using: composite
   steps:
-    - name: 
+    - name: trivy image scan
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        scan-type: image
+        image-ref: ${{inputs.image-name}}
+        foemat: table
+        exit-code: 1
+        severity: CRITICAL,HIGH
+        ignore-unfixed: true
+    - name: generate sbom
+      uses: aquasecurity/trivy-action@v0.36.0
+      with:
+        scan-type: sbom
+        image-ref: ${{inputs.image-name}}
+        output: sbom.json

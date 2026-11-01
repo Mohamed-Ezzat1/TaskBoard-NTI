@@ -1,7 +1,7 @@
 name: ci by 
 run-name: run number ${{github.run_number}}
 on:
-#    push:
+    push:
     workflow_dispatch:
 jobs:
     prebuild:
@@ -46,6 +46,11 @@ jobs:
     postbuild:
       runs-on: ubuntu-latest
       needs: artifact
+      strategy:
+        matrix:
+          image:
+            - frontend:latest
+            - backend:latest
       steps:
         - name: install docker 
           uses: docker/setup-buildx-action@v3
@@ -57,3 +62,7 @@ jobs:
           shell: bash
           run:
             docker load -i images.tar
+        - name: postbuild composite
+          uses: ./.github/postbuild
+          with:
+            image-name: ${{matrix.image}}
