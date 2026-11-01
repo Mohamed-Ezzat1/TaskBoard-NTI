@@ -68,6 +68,6 @@ jobs:
           run:
             docker load -i images.tar
         - name: postbuild composite
-          uses: ./.github/actions/postbuild
+          uses: $/.github/actions/postbuild
           with:
             image-name: ${{matrix.image}}
