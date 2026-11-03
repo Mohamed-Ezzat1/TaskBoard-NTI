@@ -26,15 +26,15 @@ jobs:
             fetch-depth: 0
             persist-credentials: false
         - name: install docker 
-          uses: docker/setup-buildx-action@v3
+          uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3.12.0
         - name: build frontend image
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25    # v5.4.0
           with:
             context: ./app/frontend
             tags: frontend:latest
             load: true
         - name: build backend image
-          uses: docker/build-push-action@v5
+          uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25    # v5.4.0
           with:
             context: ./app/backend
             tags: backend:latest
@@ -59,7 +59,7 @@ jobs:
             - backend:latest
       steps:
         - name: install docker 
-          uses: docker/setup-buildx-action@v3
+          uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f  # v3.12.0
         - name: download artifact
           uses: actions/download-artifact@v7
           with:
