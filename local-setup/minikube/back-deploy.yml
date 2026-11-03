@@ -13,9 +13,17 @@ spec:
       labels:
         app: back-taskboard
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: taskboard-back
           image: tsakboardback:1
           envFrom:
             - configMapRef:
                 name: connection-db
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

@@ -1,7 +1,7 @@
 FROM python:3.13-slim
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt \
+COPY requirements.lock .
+RUN pip install --only-binary :all: --require-hashes -r requirements.lock \
  && pip uninstall -y pip \
  && useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin app
 

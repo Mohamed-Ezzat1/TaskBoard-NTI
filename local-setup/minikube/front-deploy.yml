@@ -13,6 +13,7 @@ spec:
       labels:
         app: front-taskboard
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: taskboard-front
           image: tsakboardfront:1
@@ -22,3 +23,10 @@ spec:
                 configMapKeyRef:
                   name: connection-db
                   key: BACKEND_URL
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

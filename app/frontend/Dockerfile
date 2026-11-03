@@ -2,7 +2,7 @@
 FROM node:22-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json* ./
-RUN npm ci || npm install
+RUN npm ci --ignore-scripts
 COPY . .
 ARG NEXT_PUBLIC_APP_VERSION=local
 ENV NEXT_PUBLIC_APP_VERSION=${NEXT_PUBLIC_APP_VERSION} \
@@ -11,7 +11,7 @@ RUN npm run build
 
 FROM nginxinc/nginx-unprivileged:1.29-alpine
 USER root
-RUN apk upgrade --no-cache && apk add --no-cache
+RUN apk upgrade --no-cache && apk add --no-cache 'brotli-libs>=1.2.1-r0'
 COPY --from=build /app/out /usr/share/nginx/html
 COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 ENV BACKEND_URL=http://backend:8000
