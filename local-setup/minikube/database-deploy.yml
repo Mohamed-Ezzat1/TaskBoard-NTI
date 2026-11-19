@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: db-taskboard
+  name: db-taskboard-{{ .Release.Name }}
   namespace: taskboard
 spec:
   replicas: 1
   selector:
     matchLabels:
-     app: db-taskboard
+     app: db-taskboard-{{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -19,7 +19,7 @@ spec:
           image:  postgres:17
           envFrom:
             - configMapRef:
-                name: connection-db
+                name: connection-db-{{ .Release.Name }}
           resources:
             requests:
               memory: "128Mi"

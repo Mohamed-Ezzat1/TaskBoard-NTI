@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: back-taskboard
+  namespace: taskboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: back-taskboard
+  template:
+    metadata:
+      labels:
+        app: back-taskboard
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: taskboard-back
+          image: tsakboardback:1
+          envFrom:
+            - configMapRef:
+                name: connection-db
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
